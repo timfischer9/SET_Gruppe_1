@@ -5,6 +5,7 @@ Markus, Kevin, Thut, Tim, Elias, Bene, Tina, Chiara
 
 
 Anleitung für Git:
+Git installieren, für Windows auch TortoiseGit möglich
 
 Projekt runterladen:
  - git clone https://github.com/timfischer9/SET_Gruppe_1.git
