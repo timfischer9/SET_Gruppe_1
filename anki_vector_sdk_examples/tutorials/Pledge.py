@@ -11,9 +11,10 @@ from anki_vector.util import degrees, distance_mm, speed_mmps
 
 def main():
     args = anki_vector.util.parse_command_args()
-    with anki_vector.Robot(args.serial) as robot:
+    with anki_vector.Robot(args.serial, enable_custom_object_detection=True, enable_nav_map_feed=True) as robot:
         robot.behavior.say_text("Connected")
-
+        robot.viewer.show()
+        robot.viewer_3d.show()
         print("connected---------------------------------------------------------------")
         battery_state = robot.get_battery_state()
         print("Robot battery Level: {0}".format(battery_state.battery_level))
@@ -45,7 +46,7 @@ def main():
                     robot.behavior.turn_in_place(degrees(-90))
                     print(counter)
                 else:
-                    counter = counter - 1;
+                    counter = counter - 1
 
 
 if __name__ == "__main__":
