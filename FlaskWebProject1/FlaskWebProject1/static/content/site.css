@@ -57,6 +57,10 @@ input.button:active {
     background-color: #e6e6e6;
 }
 
+.Functions{
+    margin-top: 100px;
+    margin-left: 125px;
+}
 
 input.button1 {
     width: 100px;

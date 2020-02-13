@@ -46,9 +46,9 @@ def about():
 @app.route('/connect_fkt', methods=['POST'])
 def connect_fkt():
     robot.connect()
+
     print ("Connected!")
     robot.behavior.say_text("Connected")
-
     return ""
 
 @app.route('/Disconnect_fkt', methods=['POST'])
@@ -132,5 +132,22 @@ def starts():
 
 @app.route('/home_fkt', methods=['POST'])
 def home_fkt():
+    robot.world.connect_cube()
     print ("Coming Home!")
+    robot.behavior.set_eye_color(0.57, 1.00)
+    if robot.world.connected_light_cube:
+        robot.behavior.dock_with_cube(robot.world.connected_light_cube)
+    return ""
+
+
+@app.route('/MapFkt', methods=['POST'])
+def MapFkt():
+    print ("Map activated!")
+    robot.viewer_3d.show()
+    return ""
+
+@app.route('/CamFkt', methods=['POST'])
+def CamFkt():
+    print ("Cam activated!")
+    robot.viewer.show()
     return ""
