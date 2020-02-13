@@ -12,12 +12,23 @@
 <body>
 
     <div class="container body-content">
-        <input id="Pledge" type="button" value="Pledge-Algo" onclick="doFunction();" />
-        <input id="connect" type="button" value="Connect to Robot" onclick="ConnectFunction();" />
+        <input class="myButton" id="connect" type="button" value="Connect to Robot" onclick="ConnectFunction();" />
+        <input class="myButton" id="connect" type="button" value="Disconnect Robot" onclick="DisConnectFunction();" />
+        <input class="myButton" id="Pledge" type="button" value="Pledge-Algo" onclick="doFunction();" />
+        <input class="myButton" id="home" type="button" value="Coming Home" onclick="HomeFunction();" />
         {% block content %}{% endblock %}
         <hr />
     </div>
 
+    <div class="container body-content">
+        <input class="button" id="fwd" type="button" value="Forwärts" onclick="fwdFunction()" />
+        <input class="button1" id="left" type="button" value="Links" onclick="leftFunction()" />
+        <input class="button1" id="right" type="button" value="Rechts" onclick="rightFunction()" />
+        <input class="button" id="bwd" type="button" value="Rückwärts" onclick="bckFunction()" />
+    </div>
+    <footer class="keytext"><p>Keyboard Inputs</p>
+        <p id="log"></p>
+    </footer>
     <script src="/static/scripts/jquery-1.10.2.js"></script>
     <script src="/static/scripts/bootstrap.js"></script>
     <script src="/static/scripts/respond.js"></script>

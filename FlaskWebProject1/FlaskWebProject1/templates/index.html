@@ -2,20 +2,28 @@
 
 {% block content %}
 
-<p>Focus the IFrame first (e.g. by clicking in it), then try pressing some keys.</p>
-<p id="log"></p>
 
 <script>
 	document.addEventListener('keydown', logKey);
 	document.addEventListener('keyup', logKeyup);
 	document.getElementById("Pledge").onclick = doFunction;
+	document.getElementById("fwd").onmousedown = fwdFunction;
+	document.getElementById("bwd").onmousedown = bwdFunction;
+	document.getElementById("left").onmousedown = leftFunction;
+	document.getElementById("right").onmousedown = rightFunction;
+	document.getElementById("home").onmousedown = HomeFunction;
+	document.getElementById("fwd").onmouseup = stopFunction;
+	document.getElementById("bwd").onMouseUp = stopFunction;
+	document.getElementById("left").onmouseup = stopFunction;
+	document.getElementById("right").onmouseup = stopFunction;
+
 
 	document.getElementById("connect").onclick = ConnectFunction;
+	document.getElementById("connect").onclick = DisConnectFunction;
 
 	function logKey(e) {
-		log.textContent += ` ${e.code}`;
+		log.textContent = ` ${e.code}`;
 		if (`${e.code}` == 'KeyW') {
-			log.textContent += 'e';
 			$.ajax({
 				type: "POST",
 				url: "/startw",
@@ -26,7 +34,6 @@
 		}
 
 		if (`${e.code}` == 'KeyD') {
-		    log.textContent += 'e';
 		    	$.ajax({
 		    		type: "POST",
 		    		url: "/startd",
@@ -37,7 +44,6 @@
 		}
 
 		if (`${e.code}` == 'KeyA') {
-		    log.textContent += 'e';
 		    	$.ajax({
 		    		type: "POST",
 		    		url: "/starta",
@@ -48,7 +54,6 @@
 		}
 
 		if (`${e.code}` == 'KeyS') {
-		    log.textContent += 'e';
 		    	$.ajax({
 		    		type: "POST",
 		    		url: "/starts",
@@ -69,6 +74,56 @@
 		});
 	}
 
+	function stopFunction() {
+	    $.ajax({
+			type: "POST",
+			url: "/stopw",
+			success: function(response) {
+				// here you do whatever you want with the response variable
+			}
+		});
+	}
+
+	function fwdFunction() {
+	    $.ajax({
+			type: "POST",
+			url: "/startw",
+			success: function(response) {
+				// here you do whatever you want with the response variable
+			}
+		});
+	}
+
+	function leftFunction() {
+	    $.ajax({
+			type: "POST",
+			url: "/starta",
+			success: function(response) {
+				// here you do whatever you want with the response variable
+			}
+		});
+	}
+
+	function rightFunction() {
+	    $.ajax({
+			type: "POST",
+			url: "/startd",
+			success: function(response) {
+				// here you do whatever you want with the response variable
+			}
+		});
+	}
+
+	function bwdFunction() {
+	    $.ajax({
+			type: "POST",
+			url: "/starts",
+			success: function(response) {
+				// here you do whatever you want with the response variable
+			}
+		});
+	}
+
 	function ConnectFunction(){
 	    $.ajax({
 			type: "POST",
@@ -79,10 +134,29 @@
 		});
 	}
 
+	function DisConnectFunction(){
+	    $.ajax({
+			type: "POST",
+			url: "/Disconnect_fkt",
+			success: function(response) {
+				// here you do whatever you want with the response variable
+			}
+		});
+	}
+
+	function HomeFunction(){
+	    $.ajax({
+			type: "POST",
+			url: "/home_fkt",
+			success: function(response) {
+				// here you do whatever you want with the response variable
+			}
+		});
+	}
+
 	function logKeyup(e) {
-		log.textContent += ` ${e.code}`;
+		log.textContent = ` `;
 		if (`${e.code}` == 'KeyW') {
-			log.textContent += 'e';
 			$.ajax({
 				type: "POST",
 				url: "stopw",
@@ -93,7 +167,6 @@
         }
 
 		if (`${e.code}` == 'KeyD') {
-			log.textContent += 'e';
 			$.ajax({
 				type: "POST",
 				url: "stopw",
@@ -104,7 +177,6 @@
 	    }
 
 	    if (`${e.code}` == 'KeyA') {
-			log.textContent += 'e';
 			$.ajax({
 				type: "POST",
 				url: "stopw",
@@ -115,7 +187,6 @@
 	    }
 
 	    if (`${e.code}` == 'KeyS') {
-			log.textContent += 'e';
 			$.ajax({
 				type: "POST",
 				url: "stopw",

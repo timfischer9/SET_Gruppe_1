@@ -51,6 +51,13 @@ def connect_fkt():
 
     return ""
 
+@app.route('/Disconnect_fkt', methods=['POST'])
+def Disconnect_fkt():
+    robot.behavior.say_text("Bye Bye")
+    robot.disconnect()
+    print ("Disconnected!")
+    return ""
+
 
 @app.route('/test1', methods=['POST'])
 def test1():
@@ -119,6 +126,11 @@ def starta():
 
 @app.route('/starts', methods=['POST'])
 def starts():
-    print ("turn right")
+    print ("bwd")
     robot.motors.set_wheel_motors(-200,-200)
+    return ""
+
+@app.route('/home_fkt', methods=['POST'])
+def home_fkt():
+    print ("Coming Home!")
     return ""
