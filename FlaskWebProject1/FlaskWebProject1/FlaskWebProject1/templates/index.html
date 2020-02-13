@@ -1,0 +1,79 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<p>Focus the IFrame first (e.g. by clicking in it), then try pressing some keys.</p>
+<p id="log"></p>
+
+<script>
+	document.addEventListener('keydown', logKey);
+
+	function logKey(e) {
+		log.textContent += ` ${e.code}`;
+		if (`${e.code}` == 'KeyE') {
+			log.textContent += 'e';
+			$.ajax({
+				type: "POST",
+				url: "/helloWorld",
+				success: function(response) {
+					// here you do whatever you want with the response variable
+				}
+			});
+			//$.ajax({
+			//	type: "POST",
+			//	url: "/test.py",
+			//	success: function(response) {
+			//		// here you do whatever you want with the response variable
+			//	}
+			//});
+		}
+	}
+</script>
+
+
+
+<!--<p>Click here and use WASDQ to controll the robot.</p>
+<p>W = straight</p>
+<p>A = left</p>
+<p>D = right</p>
+<p>S = back</p>
+<p>Q = stop</p>
+
+<input type="text" onkeydown="myFunction()">
+
+<script>
+	function myFunction() {
+		alert("You pressed a key inside the input field");
+
+	}
+</script>-->
+
+<!--<div class="jumbotron">
+    <h1>Flask</h1>
+    <p class="lead">Flask is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
+    <p><a href="http://flask.pocoo.org/" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Getting started</h2>
+        <p>
+            Flask gives you a powerful, patterns-based way to build dynamic websites that
+            enables a clean separation of concerns and gives you full control over markup
+            for enjoyable, agile development.
+        </p>
+        <p><a class="btn btn-default" href="http://flask.pocoo.org/docs/">Learn more &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Get more libraries</h2>
+        <p>The Python Package Index is a repository of software for the Python programming language.</p>
+        <p><a class="btn btn-default" href="https://pypi.python.org/pypi">Learn more &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Microsoft Azure</h2>
+        <p>You can easily publish to Microsoft Azure using Visual Studio. Find out how you can host your application using a free trial today.</p>
+        <p><a class="btn btn-default" href="http://azure.microsoft.com">Learn more &raquo;</a></p>
+    </div>
+</div>-->
+
+{% endblock %}
