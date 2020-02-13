@@ -13,7 +13,7 @@
 
     <div class="container body-content">
         <input class="myButton" id="connect" type="button" value="Connect to Robot" onclick="ConnectFunction();" />
-        <input class="myButton" id="connect" type="button" value="Disconnect Robot" onclick="DisConnectFunction();" />
+        <input class="myButton" id="disconnect" type="button" value="Disconnect Robot" onclick="DisConnectFunction();" />
         <input class="myButton" id="Pledge" type="button" value="Pledge-Algo" onclick="doFunction();" />
         <input class="myButton" id="home" type="button" value="Coming Home" onclick="HomeFunction();" />
         {% block content %}{% endblock %}
@@ -26,9 +26,15 @@
         <input class="button1" id="right" type="button" value="Rechts" onclick="rightFunction()" />
         <input class="button" id="bwd" type="button" value="Rückwärts" onclick="bckFunction()" />
     </div>
+
+    <div class="Functions">
+        <input class="myButton" id="Map" type="button" value="Map" onclick="MapFkt();" />
+        <input class="myButton" id="Cam" type="button" value="Camera" onclick="CamFkt();" />
+    </div>
     <footer class="keytext"><p>Keyboard Inputs</p>
         <p id="log"></p>
     </footer>
+
     <script src="/static/scripts/jquery-1.10.2.js"></script>
     <script src="/static/scripts/bootstrap.js"></script>
     <script src="/static/scripts/respond.js"></script>

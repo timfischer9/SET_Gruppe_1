@@ -19,7 +19,9 @@
 
 
 	document.getElementById("connect").onclick = ConnectFunction;
-	document.getElementById("connect").onclick = DisConnectFunction;
+	document.getElementById("disconnect").onclick = DisConnectFunction;
+	document.getElementById("Map").onclick = MapFkt;
+	document.getElementById("Cam").onclick = CamFkt;
 
 	function logKey(e) {
 		log.textContent = ` ${e.code}`;
@@ -68,6 +70,26 @@
 	    $.ajax({
 			type: "POST",
 			url: "/Pledge_Algo",
+			success: function(response) {
+				// here you do whatever you want with the response variable
+			}
+		});
+	}
+
+	function MapFkt() {
+	    $.ajax({
+			type: "POST",
+			url: "/MapFkt",
+			success: function(response) {
+				// here you do whatever you want with the response variable
+			}
+		});
+	}
+
+	function CamFkt() {
+	    $.ajax({
+			type: "POST",
+			url: "/CamFkt",
 			success: function(response) {
 				// here you do whatever you want with the response variable
 			}
@@ -129,7 +151,7 @@
 			type: "POST",
 			url: "/connect_fkt",
 			success: function(response) {
-				// here you do whatever you want with the response variable
+				document.getElementById("connect").style.background='#99ffa5';
 			}
 		});
 	}
@@ -139,7 +161,7 @@
 			type: "POST",
 			url: "/Disconnect_fkt",
 			success: function(response) {
-				// here you do whatever you want with the response variable
+				document.getElementById("connect").style.background='#7892c2';
 			}
 		});
 	}

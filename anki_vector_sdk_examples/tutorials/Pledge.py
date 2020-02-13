@@ -13,40 +13,21 @@ def main():
     args = anki_vector.util.parse_command_args()
     with anki_vector.Robot(args.serial, enable_custom_object_detection=True, enable_nav_map_feed=True) as robot:
         robot.behavior.say_text("Connected")
-        robot.viewer.show()
         robot.viewer_3d.show()
-        print("connected---------------------------------------------------------------")
-        battery_state = robot.get_battery_state()
-        print("Robot battery Level: {0}".format(battery_state.battery_level))
+        robot.viewer.show()
+        robot.world.connect_cube()
+        print ("Connected to Cube")
+        robot.behavior.say_text("Connected to Cube")
+        robot.behavior.set_eye_color(0.57, 1.00)
 
-        robot.behavior.set_head_angle(degrees(-5.0))
-        print("Head Angle Set")
-        robot.behavior.set_lift_height(0.0)
-        print("Lift Height Set")
-        Ausgang = False
-        counter = 0
-        while Ausgang is False:
-            sensor = int(robot.proximity.last_sensor_reading.distance.distance_mm)
-            #print(sensor)
-            #print(counter)
-            if (sensor >= 200 and counter == 0):
-                while(sensor>=150):
-                    sensor = int(robot.proximity.last_sensor_reading.distance.distance_mm)
-                    robot.motors.set_wheel_motors(200,200)
-                robot.motors.stop_all_motors()
-            if (sensor < 200 ):
-                print(counter)
-                robot.behavior.turn_in_place(degrees(-90))
-                counter = counter + 1
-            if (sensor >= 200 and counter != 0):
-                robot.behavior.drive_straight(distance_mm(200), speed_mmps(200))
-                robot.behavior.turn_in_place(degrees(90))
-                print(counter)
-                if (sensor < 200):
-                    robot.behavior.turn_in_place(degrees(-90))
-                    print(counter)
-                else:
-                    counter = counter - 1
+        if robot.world.connected_light_cube:
+            robot.behavior.say_text("Going to Cube")
+            robot.behavior.dock_with_cube(robot.world.connected_light_cube)
+        else:
+            robot.behavior.say_text("Error")
+        if robot.world.connected_light_cube:
+            robot.behavior.say_text("Going to Cube")
+            robot.behavior.go_to_object(robot.world.connected_light_cube, distance_mm(70.0))
 
 
 if __name__ == "__main__":
