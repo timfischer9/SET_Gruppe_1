@@ -22,6 +22,11 @@
 	document.getElementById("disconnect").onclick = DisConnectFunction;
 	document.getElementById("Map").onclick = MapFkt;
 	document.getElementById("Cam").onclick = CamFkt;
+	document.getElementById("back").onclick = bwdstep;
+	document.getElementById("point").onclick = setPoint;
+
+
+
 
 	function logKey(e) {
 		log.textContent = ` ${e.code}`;
@@ -70,6 +75,26 @@
 	    $.ajax({
 			type: "POST",
 			url: "/Pledge_Algo",
+			success: function(response) {
+				// here you do whatever you want with the response variable
+			}
+		});
+	}
+
+	function setPoint() {
+	    $.ajax({
+			type: "POST",
+			url: "/setPoint",
+			success: function(response) {
+				// here you do whatever you want with the response variable
+			}
+		});
+	}
+
+	function bwdstep() {
+	    $.ajax({
+			type: "POST",
+			url: "/bwdstep",
 			success: function(response) {
 				// here you do whatever you want with the response variable
 			}

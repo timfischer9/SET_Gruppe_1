@@ -87,6 +87,7 @@ input.button1:active {
 	top:1px;
 }
 input.myButton {
+    margin-top: 10px;
     width: 200px;
     height: 40px;
     margin-left: 5px;

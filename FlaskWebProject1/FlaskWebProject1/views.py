@@ -2,7 +2,7 @@
 Routes and views for the flask application.
 """
 import time
-
+import numpy
 import anki_vector
 from anki_vector.util import degrees, distance_mm, speed_mmps
 
@@ -10,7 +10,10 @@ from datetime import datetime
 from flask import render_template
 from FlaskWebProject1 import app
 
-robot=anki_vector.Robot()
+robot=anki_vector.Robot(enable_nav_map_feed =True)
+Navi=[]
+drehungen=0
+
 
 @app.route('/')
 
@@ -148,11 +151,9 @@ def starts():
 
 @app.route('/home_fkt', methods=['POST'])
 def home_fkt():
-    robot.world.connect_cube()
     print ("Coming Home!")
     robot.behavior.set_eye_color(0.57, 1.00)
-    if robot.world.connected_light_cube:
-        robot.behavior.dock_with_cube(robot.world.connected_light_cube)
+
     return ""
 
 
@@ -166,4 +167,25 @@ def MapFkt():
 def CamFkt():
     print ("Cam activated!")
     robot.viewer.show()
+    return ""
+
+@app.route('/setPoint', methods=['POST'])
+def setPoint():
+    Navi.append(robot.pose)
+    #drehungen=drehungen+1
+    print("Punkt gesetzt")
+    print(Navi[len(Navi)-1])
+    return ""
+
+@app.route('/bwdstep', methods=['POST'])
+def bwdstep():
+    print("going back")
+    if(len(Navi)!=0):
+        print("Navi-lenghts",len(Navi))
+        for i in range(1,len(Navi)):
+            print("in schleife")
+            print(Navi[len(Navi)-i])
+            robot.behavior.go_to_pose(Navi[len(Navi)-i])
+    else:
+        print("Keine Daten im Navi Array")
     return ""
