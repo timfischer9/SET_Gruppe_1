@@ -11,8 +11,18 @@ from flask import render_template
 from FlaskWebProject1 import app
 
 robot=anki_vector.Robot(enable_nav_map_feed =True)
+
 Navi=[]
 drehungen=0
+abort = 0
+returnFromWall = False
+angle = 0
+angle_ref=0
+Ausgang=False
+    # Constants
+IntervallCheckingDistanceToWall = 6
+DegreesCorrectStraightPath = 3
+is_ref = 0
 
 
 @app.route('/')
@@ -69,10 +79,92 @@ def test1():
 
     return ""
 
+def distance():
+    return int(robot.proximity.last_sensor_reading.distance.distance_mm)
 
-@app.route('/Pledge_Algo', methods=['POST'])
-def Pledge_Algo():
-    print ("Pledge Alorithmus wird ausgeführt!")
+
+def moveForward(dist):
+    i = 0
+    robot.motors.set_wheel_motors(200, 200)
+    while i < dist and distance() >= 150:
+        i += 1
+        time.sleep(0.1)
+    robot.motors.stop_all_motors()
+
+
+# def moveForward(dist):
+#    while distance() >= 180:
+#        robot.motors.set_wheel_motors(200, 200)
+#    except:
+#        robot.motors.stop_all_motors()
+
+
+def correctStraigthPathl():
+    global IntervallCheckingDistanceToWall
+    global DegreesCorrectStraightPath
+    global is_ref
+    if (distance() < 80):
+        robot.behavior.turn_in_place(degrees(+90 + DegreesCorrectStraightPath))
+    else:
+        robot.behavior.turn_in_place(degrees(+90 - DegreesCorrectStraightPath))
+
+def correctStraigthPathr():
+    if (distance() < 80):
+        robot.behavior.turn_in_place(degrees(-90 - DegreesCorrectStraightPath))
+    else:
+        robot.behavior.turn_in_place(degrees(-90 + DegreesCorrectStraightPath))
+
+def edgeCheck1():
+    global angel_ref
+    angel_ref = robot.pose_angle_rad
+    print(angel_ref)
+
+    robot.behavior.drive_straight(distance_mm(150), speed_mmps(200))
+    time.sleep(1)
+
+    angel_new = robot.pose_angle_rad
+    print(angel_new)
+
+    fehler_winkel = (angel_ref - angel_new) * 57.3
+    print (fehler_winkel)
+
+    if ((fehler_winkel > 4 or fehler_winkel < -4) and fehler_winkel < 100 and fehler_winkel > -100):
+        robot.behavior.drive_straight(distance_mm(-80), speed_mmps(200))
+        robot.behavior.turn_in_place(degrees(fehler_winkel))
+
+
+def edgeCheck():
+    print("rechts ", distance())
+    robot.behavior.turn_in_place(degrees(-30))
+    print("rechts ", distance())
+    if (distance() < 100):
+        robot.behavior.turn_in_place(degrees(120))
+        robot.behavior.drive_straight(distance_mm(60), speed_mmps(200))
+        robot.behavior.turn_in_place(degrees(-90))
+    else:
+        robot.behavior.turn_in_place(degrees(60))
+        print("links ", distance())
+        if (distance() < 100):
+            robot.behavior.turn_in_place(degrees(60))
+            robot.behavior.drive_straight(distance_mm(-60), speed_mmps(200))
+            robot.behavior.turn_in_place(degrees(-90))
+        else:
+            robot.behavior.turn_in_place(degrees(-30))
+
+@app.route('/pledgelfkt', methods=['POST'])
+def pledgelfkt():
+    robot.behavior.say_text("i t coming home")
+    global IntervallCheckingDistanceToWall
+    global DegreesCorrectStraightPath
+    global is_ref
+    global Ausgang
+    IntervallCheckingDistanceToWall = 6
+    DegreesCorrectStraightPath = 3
+    is_ref = 0
+    print("connected---------------------------------------------------------------")
+    battery_state = robot.get_battery_state()
+    print("Robot battery Level: {0}".format(battery_state.battery_level))
+
     robot.behavior.set_head_angle(degrees(-5.0))
     print("Head Angle Set")
     robot.behavior.set_lift_height(0.0)
@@ -81,43 +173,148 @@ def Pledge_Algo():
     Ausgang = False
     counter = 0
 
+
+    print ("Pose of robot", robot.pose)
+    print ("X, Y coordinates: ", robot.pose.position.x, robot.pose.position.y)
     while Ausgang is False:
         robot.behavior.set_head_angle(degrees(-5.0))
         robot.behavior.set_lift_height(0.0)
 
-        sensor_straight = int(robot.proximity.last_sensor_reading.distance.distance_mm)
-        print("sensor_straight", sensor_straight)
-        print("counter_main", counter)
-        print(robot.pose_angle_rad)
+        if (is_ref == 0):
+            angel_ref = robot.pose_angle_rad
+            print(angel_ref)
+            is_ref = 1
 
-        if (sensor_straight >= 200 and counter == 0):
-            while (sensor_straight >= 150):
-                sensor_straight = int(robot.proximity.last_sensor_reading.distance.distance_mm)
+        # print("sensor_straight", distance())
+        # print("counter_main", counter)
+        # print("Angle: ", robot.pose_angle_rad)
+        # print ("Pose: ", robot.pose)
+        # print(angle)
+
+        if (distance() >= 150 and counter == 0):  # go!
+            print ("1")
+            angel_new = robot.pose_angle_rad
+            print(angel_new)
+            fehler_winkel = (angel_ref - angel_new) * 57.3
+            print (fehler_winkel)
+            if (fehler_winkel < 100 and fehler_winkel > -100):
+                robot.behavior.turn_in_place(degrees(fehler_winkel))
+
+            while (distance() >= 150):
                 robot.motors.set_wheel_motors(200, 200)
             else:
                 robot.motors.stop_all_motors()
                 print("Stop")
 
-        if (sensor_straight < 200):
-            robot.behavior.turn_in_place(degrees(-90))
+        if (distance() < 150):  # turn and counter +1
+            print ("2")
+            robot.behavior.turn_in_place(degrees(+90))
             counter = counter + 1
+            setPoint()
             print("counter_+1", counter)
 
-        if (sensor_straight >= 200 and counter != 0):
-            robot.behavior.drive_straight(distance_mm(200), speed_mmps(200))
-            robot.behavior.turn_in_place(degrees(90))
-            sensor_wall = int(robot.proximity.last_sensor_reading.distance.distance_mm)
-            print("sensor_wall", sensor_wall)
-            if (sensor_wall < 200):
-                if (sensor_wall < 120):
-                    robot.behavior.turn_in_place(degrees(-95))
-                else:
-                    robot.behavior.turn_in_place(degrees(-85))
+        if (distance() >= 150 and counter != 0):  # check if i can turn back
+            print ("3")
+            # robot.behavior.drive_straight(distance_mm(200), speed_mmps(200))
+            moveForward(IntervallCheckingDistanceToWall)
+            robot.behavior.turn_in_place(degrees(-90))
+            # Checking distance to wall
+            if (distance() < 150):
+                print("sensor_wall", distance())
+                correctStraigthPathl()
             else:
+                edgeCheck()
                 counter = counter - 1
+                setPoint()
                 print("counter -1", counter)
     return ""
 
+
+
+@app.route('/pledgerfkt', methods=['POST'])
+def pledgelrkt():
+    robot.behavior.say_text("i t coming home")
+    global IntervallCheckingDistanceToWall
+    global DegreesCorrectStraightPath
+    global is_ref
+    global Ausgang
+    print("connected---------------------------------------------------------------")
+    battery_state = robot.get_battery_state()
+    print("Robot battery Level: {0}".format(battery_state.battery_level))
+
+    robot.behavior.set_head_angle(degrees(-5.0))
+    print("Head Angle Set")
+    robot.behavior.set_lift_height(0.0)
+    print("Lift Height Set")
+
+    Ausgang = False
+    counter = 0
+    abort = 0
+    returnFromWall = False
+    angle = 0
+
+# Constants
+    IntervallCheckingDistanceToWall = 6
+    DegreesCorrectStraightPath = 3
+    is_ref = 0
+
+    print ("Pose of robot", robot.pose)
+    print ("X, Y coordinates: ", robot.pose.position.x, robot.pose.position.y)
+
+    while Ausgang is False:
+        robot.behavior.set_head_angle(degrees(-5.0))
+        robot.behavior.set_lift_height(0.0)
+
+        if (is_ref == 0):
+            angel_ref = robot.pose_angle_rad
+            print(angel_ref)
+            is_ref = 1
+
+        # print("sensor_straight", distance())
+        # print("counter_main", counter)
+        # print("Angle: ", robot.pose_angle_rad)
+        # print ("Pose: ", robot.pose)
+        # print(angle)
+
+        if (distance() >= 150 and counter == 0):  # go!
+            print ("1")
+            angel_new = robot.pose_angle_rad
+            print(angel_new)
+            fehler_winkel = (angel_ref - angel_new) * 57.3
+            print (fehler_winkel)
+            if (fehler_winkel < 100 and fehler_winkel > -100):
+                robot.behavior.turn_in_place(degrees(fehler_winkel))
+
+            while (distance() >= 150):
+                robot.motors.set_wheel_motors(200, 200)
+            else:
+                robot.motors.stop_all_motors()
+                print("Stop")
+
+        if (distance() < 150):  # turn and counter +1
+            print ("2")
+            robot.behavior.turn_in_place(degrees(-90))
+            counter = counter + 1
+            setPoint()
+            print("counter_+1", counter)
+
+        if (distance() >= 150 and counter != 0):  # check if i can turn back
+            print ("3")
+            # robot.behavior.drive_straight(distance_mm(200), speed_mmps(200))
+            moveForward(IntervallCheckingDistanceToWall)
+            robot.behavior.turn_in_place(degrees(90))
+            # Checking distance to wall
+            if (distance() < 150):
+                print("sensor_wall", distance())
+                correctStraigthPathr()
+            else:
+                edgeCheck()
+                counter = counter - 1
+                setPoint()
+                print("counter -1", counter)
+
+
+    return ""
 
 @app.route('/stopw', methods=['POST'])
 def stopw():
@@ -180,6 +377,8 @@ def setPoint():
 @app.route('/bwdstep', methods=['POST'])
 def bwdstep():
     print("going back")
+    global Ausgang
+    Ausgang=True
     if(len(Navi)!=0):
         print("Navi-lenghts",len(Navi))
         for i in range(1,len(Navi)):

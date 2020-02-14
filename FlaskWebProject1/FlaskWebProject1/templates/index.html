@@ -6,7 +6,8 @@
 <script>
 	document.addEventListener('keydown', logKey);
 	document.addEventListener('keyup', logKeyup);
-	document.getElementById("Pledge").onclick = doFunction;
+	document.getElementById("Pledgel").onclick = pledgelfkt;
+	document.getElementById("Pledger").onclick = pledgerfkt;
 	document.getElementById("fwd").onmousedown = fwdFunction;
 	document.getElementById("bwd").onmousedown = bwdFunction;
 	document.getElementById("left").onmousedown = leftFunction;
@@ -71,10 +72,19 @@
 		}
 	}
 
-	function doFunction() {
+	function pledgelfkt() {
 	    $.ajax({
 			type: "POST",
-			url: "/Pledge_Algo",
+			url: "/pledgelfkt",
+			success: function(response) {
+				// here you do whatever you want with the response variable
+			}
+		});
+	}
+	function pledgerfkt() {
+	    $.ajax({
+			type: "POST",
+			url: "/pledgerfkt",
 			success: function(response) {
 				// here you do whatever you want with the response variable
 			}
